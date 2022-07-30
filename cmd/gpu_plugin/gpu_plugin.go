@@ -43,8 +43,8 @@ const (
 	vendorString      = "0x8086"
 
 	// Device plugin settings.
-	namespace  = "gpu.intel.com"
-	deviceType = "i915"
+	namespace  = "nex.intel.com"
+	deviceType = "kmsg"
 
 	// telemetry resource settings.
 	monitorType = "i915_monitoring"
@@ -238,7 +238,7 @@ func (dp *devicePlugin) Scan(notifier dpapi.Notifier) error {
 	var previouslyFound = -1
 
 	for {
-		devTree, err := dp.scan()
+		devTree, err := dp.scankmsg()
 		if err != nil {
 			klog.Warning("Failed to scan: ", err)
 		}
@@ -280,10 +280,12 @@ func (dp *devicePlugin) isCompatibleDevice(name string) bool {
 }
 
 func (dp *devicePlugin) scankmsg() (dpapi.DeviceTree, error) {
-	_, err := os.ReadFile(dp.kmsgDev)
+	klog.V(4).Info("File name: ", dp.kmsgDev)
+	_, err := os.Stat(dp.kmsgDev)
 	if err != nil {
 		return nil, errors.Wrap(err, "Can't read /dev/kmsg folder")
 	}
+	klog.V(4).Info("/dev/kmgs found")
 	devTree := dpapi.NewDeviceTree()
 	nodes := []pluginapi.DeviceSpec{
 		{

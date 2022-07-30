@@ -40,6 +40,7 @@ else
     exit 1
 fi
 
-docker push gar-registry.caas.intel.com/virtiot/${IMAGE_NAME}:${TAG}
+docker push ${IMAGE_NAME}:${TAG}
 docker image prune -f
+docker container prune -f
 
