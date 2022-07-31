@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kmsg-test
+  labels:
+    jobgroup: kmsg
+spec:
+  template:
+    metadata:
+      labels:
+        jobgroup: kmsg
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: kmsg
+        image: ubuntu:20.04
+        #image: busybox
+        imagePullPolicy : IfNotPresent
+        command:
+        - sh
+        - -c
+        - |
+          dmesg -w
+          #echo "Sleeping..." && sleep infinity
+        env:
+        - name: TEST_NAME
+          value: "TEST_01"
+        resources:
+          limits:
+            nex.intel.com/kmsg: 1
+        #securityContext:
+        #  privileged: true
